@@ -155,7 +155,7 @@ User input (text + files)
 | `src/lib/mcp/mcpClientFactory.ts`                  | Creates MCP clients for all transport types                        |
 | `src/lib/processors/registry/ProcessorRegistry.ts` | Selects file processor by MIME type + priority                     |
 | `src/lib/types/index.ts`                           | Main type exports (start here for any type lookup)                 |
-| `src/lib/types/providers.ts`                       | `AIProvider` interface, `AIProviderName` enum                      |
+| `src/lib/types/providers.ts`                       | `AIProvider` type                                                  |
 | `src/lib/types/mcp.ts`                             | `MCPTransportType` and MCP config types                            |
 | `src/lib/constants/contextWindows.ts`              | Per-provider, per-model context window sizes                       |
 | `src/lib/context/contextCompactor.ts`              | Multi-stage context reduction orchestrator                         |
@@ -223,7 +223,7 @@ pnpm run build:cli && pnpm run cli <command>
 ### Adding a New Provider
 
 1. Create `src/lib/providers/yourProvider.ts` — extend `BaseProvider`
-2. Add name to `AIProviderName` enum in `src/lib/types/providers.ts`
+2. Add name to `AIProviderName` enum in `src/lib/constants/enums.ts`
 3. Add model constants to `src/lib/models/`
 4. Register in `ProviderRegistry.registerAllProviders()` using a dynamic import:
 
@@ -239,7 +239,7 @@ pnpm run build:cli && pnpm run cli <command>
    );
    ```
 
-5. If multimodal: add vision capabilities to `ProviderImageAdapter.VISION_CAPABILITIES`
+5. If multimodal: add vision capabilities to `VISION_CAPABILITIES`
 6. Add to CLI provider choices in `src/cli/factories/commandFactory.ts`
 7. Add tests to the most relevant `test/continuous-test-suite-*.ts` (e.g. `-providers.ts`), or create a new suite `test/continuous-test-suite-<name>.ts` and add a matching `test:<name>` script in `package.json`
 
@@ -252,7 +252,7 @@ pnpm run build:cli && pnpm run cli <command>
    - `code/` — source code, config files
    - `media/` — video, audio
    - `archive/` — zip, tar, gz
-2. Extend `BaseFileProcessor` and implement `canProcess()`, `process()`, `getInfo()`
+2. Extend `BaseFileProcessor` and implement `buildProcessedResult()`
 3. Register in `ProcessorRegistry` with a priority (lower number = higher priority)
 4. Add MIME type mappings in `src/lib/processors/config/mimeTypes.ts`
 5. Add tests to the closest existing suite (e.g. `test/continuous-test-suite-context.ts` for file-handling, or `continuous-test-suite.ts` for CLI-level coverage). There is no dedicated `file-processor-test-suite.ts`.
